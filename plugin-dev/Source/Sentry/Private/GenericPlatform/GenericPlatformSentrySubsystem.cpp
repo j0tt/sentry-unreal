@@ -304,6 +304,11 @@ void FGenericPlatformSentrySubsystem::InitWithSettings(const USentrySettings* se
 	sentry_options_set_on_crash(options, HandleOnCrash, this);
 	sentry_options_set_shutdown_timeout(options, 3000);
 
+	if (settings->RequireConsent)
+	{
+		sentry_options_set_require_user_consent(options, 1);
+	}
+
 	int initResult = sentry_init(options);
 
 	UE_LOG(LogSentrySdk, Log, TEXT("Sentry initialization completed with result %d (0 on success)."), initResult);
@@ -314,6 +319,28 @@ void FGenericPlatformSentrySubsystem::InitWithSettings(const USentrySettings* se
 
 	isStackTraceEnabled = settings->AttachStacktrace;
 	isPiiAttachmentEnabled = settings->SendDefaultPii;
+
+	if (settings->RequireConsent)
+	{
+		if (GetUserConsent() == EUserConsent::Unknown)
+		{
+			if (settings->DefaultConsent != EUserConsent::Unknown)
+			{
+				switch (settings->DefaultConsent)
+				{
+				case EUserConsent::Given:
+					GiveConsent();
+					break;
+				case EUserConsent::Revoked:
+					RevokeConsent();
+					break;
+				default:
+					UE_LOG(LogSentrySdk, Warning, TEXT("Value given for DefaultConsent not recognized, skipping"));
+					break;
+				}
+			}
+		}
+	}
 }
 
 void FGenericPlatformSentrySubsystem::Close()
@@ -496,6 +523,26 @@ void FGenericPlatformSentrySubsystem::RemoveUser()
 	{
 		crashReporter->RemoveUser();
 	}
+}
+
+void FGenericPlatformSentrySubsystem::RevokeConsent()
+{
+	sentry_user_consent_revoke();
+}
+
+void FGenericPlatformSentrySubsystem::GiveConsent()
+{
+	sentry_user_consent_give();
+}
+
+EUserConsent FGenericPlatformSentrySubsystem::GetUserConsent()
+{
+	sentry_user_consent_t NativeConsentValue = sentry_user_consent_get();
+	if (NativeConsentValue == -1)
+	{
+		return EUserConsent::Unknown;
+	}
+	return static_cast<EUserConsent>(NativeConsentValue);
 }
 
 void FGenericPlatformSentrySubsystem::ConfigureScope(const FSentryScopeDelegate& onConfigureScope)

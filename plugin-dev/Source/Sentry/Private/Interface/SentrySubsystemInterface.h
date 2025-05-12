@@ -42,6 +42,9 @@ public:
 	virtual void CaptureUserFeedback(TSharedPtr<ISentryUserFeedback> userFeedback) = 0;
 	virtual void SetUser(TSharedPtr<ISentryUser> user) = 0;
 	virtual void RemoveUser() = 0;
+	virtual void RevokeConsent() = 0;
+	virtual void GiveConsent() = 0;
+	virtual EUserConsent GetUserConsent() = 0;
 	virtual void ConfigureScope(const FSentryScopeDelegate& onConfigureScope) = 0;
 	virtual void SetContext(const FString& key, const TMap<FString, FString>& values) = 0;
 	virtual void SetTag(const FString& key, const FString& value) = 0;

@@ -102,6 +102,20 @@ public:
 	void ClearBreadcrumbs();
 
 	/**
+	 * Toggles the users consent to send crash reports
+	 *
+	 * @param bShouldSendCrashReports If the user has consented to sending crash reports.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Sentry")
+	void SetShouldSendCrashReports(bool bShouldSendCrashReports);
+
+	/**
+	 * Gets the historical consent value of the user, unknown if consent was never explicitly given or revoked
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Sentry")
+	EUserConsent GetShouldSendCrashReports();
+
+	/**
 	 * Captures the message.
 	 *
 	 * @param Message The message to send.

@@ -26,6 +26,9 @@ public:
 	virtual void SetContext(const FString& key, const TMap<FString, FString>& values) override;
 	virtual void SetTag(const FString& key, const FString& value) override;
 	virtual void RemoveTag(const FString& key) override;
+	virtual void RevokeConsent() override {};
+	virtual void GiveConsent() override {};
+	virtual EUserConsent GetUserConsent() override { return EUserConsent::Unknown; }
 	virtual void SetLevel(ESentryLevel level) override;
 	virtual void StartSession() override;
 	virtual void EndSession() override;

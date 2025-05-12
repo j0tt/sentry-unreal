@@ -45,6 +45,8 @@ USentrySettings::USentrySettings(const FObjectInitializer& ObjectInitializer)
 	, UseLegacyGradlePlugin(false)
 	, CrashReporterUrl()
 	, bIsDirty(false)
+	, RequireConsent(false)
+	, DefaultConsent(EUserConsent::Unknown)
 {
 	if (GIsEditor)
 	{

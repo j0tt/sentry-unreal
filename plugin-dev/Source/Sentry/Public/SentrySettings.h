@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Engine/EngineTypes.h"
+#include "SentryDataTypes.h"
 #include "SentrySettings.generated.h"
 
 class USentryBeforeSendHandler;
@@ -192,6 +193,14 @@ class SENTRY_API USentrySettings : public UObject
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "General",
 		Meta = (DisplayName = "Editor DSN", ToolTip = "The Editor DSN (Data Source Name) if you want to isolate editor crashes from packaged game crashes, defaults to Dsn if not provided."))
 	FString EditorDsn;
+	
+	UPROPERTY(Config, EditAnywhere, Category = "General",
+		Meta = (DisplayName = "Require User Consent", ToolTip = "Flag indicating whether the user's consent is required before uploading crash data."))
+	bool RequireConsent;
+
+	UPROPERTY(Config, EditAnywhere, Category = "General",
+		Meta = (DisplayName = "Default User Consent", ToolTip = "Flag indicating if consent is opt-out or opt-in"))
+	EUserConsent DefaultConsent;
 
 	UPROPERTY(Config, EditAnywhere, Category = "General",
 		Meta = (DisplayName = "Enable verbose logging", ToolTip = "Flag indicating whether to enable verbose logging."))

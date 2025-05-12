@@ -238,6 +238,29 @@ void USentrySubsystem::ClearBreadcrumbs()
 	SubsystemNativeImpl->ClearBreadcrumbs();
 }
 
+void USentrySubsystem::SetShouldSendCrashReports(bool bShouldSendCrashReports)
+{
+	if (bShouldSendCrashReports)
+	{
+		SubsystemNativeImpl->GiveConsent();
+	}
+	else
+	{
+		SubsystemNativeImpl->RevokeConsent();
+	}
+}
+
+EUserConsent USentrySubsystem::GetShouldSendCrashReports()
+{
+	EUserConsent Consent = EUserConsent::Unknown;
+	int32 ConsentValue = static_cast<int32>(SubsystemNativeImpl->GetUserConsent());
+	if (ConsentValue != -1)
+	{
+		Consent = static_cast<EUserConsent>(ConsentValue);
+	}
+    return Consent;
+}
+
 FString USentrySubsystem::CaptureMessage(const FString& Message, ESentryLevel Level)
 {
 	check(SubsystemNativeImpl);
